@@ -2,17 +2,37 @@ package db;
 
 import dev.hyperapi.runtime.core.model.BaseEntity;
 import dev.hyperapi.runtime.core.processor.annotations.RestService;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@Table(name = "orders")
 @RestService(
-        mapping = @RestService.Mapping(ignore = {"internalId"})
+        path = "/orders",
+        mapping = @RestService.Mapping(
+                ignore = {"internalId"},
+                ignoreNested = {"checkout.orders", "stockQuantity"}
+        )
 )
 public class Order extends BaseEntity {
 
     int orderNumber;
     int stockQuantity;
     String internalId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "checkout_id")
+    private Checkout checkout;
+
+    @ManyToMany
+    @JoinTable(
+            name = "order_product",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Product> products = new ArrayList<>();
 
     public int getOrderNumber() {
         return orderNumber;
@@ -37,4 +57,14 @@ public class Order extends BaseEntity {
     public void setInternalId(String internalId) {
         this.internalId = internalId;
     }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
 }
+
+
