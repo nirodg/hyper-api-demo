@@ -15,6 +15,27 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>21</maven.compiler.release>
         <quarkus.version>3.22.3</quarkus.version>
+
+        <!-- Java Version -->
+        <java.version>21</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <!-- Core Framework Versions -->
+        <hyperapi.version>0.1.0-SNAPSHOT</hyperapi.version>  <!-- Update to your HyperAPI version -->
+        <quarkus.version>3.22.3</quarkus.version>  <!-- Optional for Quarkus projects -->
+
+        <!-- Annotation Processors -->
+        <lombok.version>1.18.32</lombok.version>
+        <mapstruct.version>1.6.0.Beta2</mapstruct.version>  <!-- Latest as of June 2024 -->
+
+        <!-- Jakarta/JPA Versions -->
+        <jakarta.version>10.0.0</jakarta.version>
+        <hibernate.version>6.4.4.Final</hibernate.version>
+
+        <!-- Build Properties -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
     </properties>
 
     <dependencyManagement>
@@ -36,11 +57,18 @@
             <artifactId>hyper-api</artifactId>
             <version>0.1.0-SNAPSHOT</version>
         </dependency>-->
-        
+
         <dependency>
             <groupId>dev.hyperapi</groupId>
             <artifactId>quarkus-hyperapi-extension</artifactId>
             <version>0.1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>dev.hyperapi</groupId>
+            <artifactId>quarkus-hyperapi-processor</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- Quarkus core for REST & JPA -->
@@ -75,8 +103,9 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.38</version>
+            <scope>provided</scope>
         </dependency>
-        
+
         <!-- Tests -->
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -88,11 +117,25 @@
             <artifactId>rest-assured</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.5.5.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>1.5.5.Final</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-arc</artifactId>
+        </dependency>
+
     </dependencies>
 
-    <!-- ?????????????????????????????? -->
-    <!-- Build plugins                 -->
-    <!-- ?????????????????????????????? -->
     <build>
         <plugins>
             <!-- Quarkus dev-mode / build plugin -->
@@ -109,13 +152,69 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- Compile with JDK 21 -->
             <plugin>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-maven-plugin</artifactId>
+                <version>1.18.20.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>delombok</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/generated-sources/delombok</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>3.13.0</version>
                 <configuration>
-                    <release>${maven.compiler.release}</release>
+                    <source>21</source>
+                    <target>21</target>
+                    <!--                    <annotationProcessorPaths>-->
+                    <!--                        <path>-->
+                    <!--                            <groupId>org.mapstruct</groupId>-->
+                    <!--                            <artifactId>mapstruct-processor</artifactId>-->
+                    <!--                            <version>${mapstruct.version}</version>-->
+                    <!--                        </path>-->
+                    <!--                        <path>-->
+                    <!--                            <groupId>org.projectlombok</groupId>-->
+                    <!--                            <artifactId>lombok-mapstruct-binding</artifactId>-->
+                    <!--                            <version>0.2.0</version>-->
+                    <!--                        </path>-->
+                    <!--                        <path>-->
+                    <!--                            <groupId>org.projectlombok</groupId>-->
+                    <!--                            <artifactId>lombok</artifactId>-->
+                    <!--                            <version>${lombok.version}</version>-->
+                    <!--                        </path>-->
+                    <!--                        <path>-->
+                    <!--                            <groupId>dev.hyperapi</groupId>-->
+                    <!--                            <artifactId>quarkus-hyperapi-processor</artifactId>-->
+                    <!--                            <version>${hyperapi.version}</version>-->
+                    <!--                        </path>-->
+
+
+                    <!--&lt;!&ndash;                        <path>&ndash;&gt;-->
+                    <!--&lt;!&ndash;                            <groupId>org.hibernate.orm</groupId>&ndash;&gt;-->
+                    <!--&lt;!&ndash;                            <artifactId>hibernate-jpamodelgen</artifactId>&ndash;&gt;-->
+                    <!--&lt;!&ndash;                            <version>${hibernate.version}</version>&ndash;&gt;-->
+                    <!--&lt;!&ndash;                        </path>&ndash;&gt;-->
+
+                    <!--                        <path>-->
+                    <!--                            <groupId>jakarta.platform</groupId>-->
+                    <!--                            <artifactId>jakarta.jakartaee-api</artifactId>-->
+                    <!--                            <version>${jakarta.version}</version>-->
+                    <!--                        </path>-->
+                    <!--                    </annotationProcessorPaths>-->
+<!--                    <compilerArgs>-->
+<!--                        <arg>-Amapstruct.defaultComponentModel=cdi</arg>-->
+<!--                        <arg>-Amapstruct.unmappedTargetPolicy=WARN</arg>-->
+<!--                        <arg>-Alombok.addLombokGeneratedAnnotation=true</arg>-->
+<!--                    </compilerArgs>-->
                 </configuration>
             </plugin>
         </plugins>
