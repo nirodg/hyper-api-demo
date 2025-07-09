@@ -1,70 +1,48 @@
 package db;
 
-import dev.hyperapi.runtime.core.model.BaseEntity;
+import db.events.KafkaEventsForOrder;
+import dev.hyperapi.runtime.core.model.HyperEntity;
 import dev.hyperapi.runtime.core.processor.annotations.RestService;
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@Data
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "orders")
 @RestService(
-        path = "/orders",
-        mapping = @RestService.Mapping(
-                ignore = {"internalId"},
-                ignoreNested = {"checkout.orders", "stockQuantity"}
-        )
-)
-public class Order extends BaseEntity {
+    path = "/orders",
+    mapping =
+        @RestService.Mapping(
+            ignore = {"internalId"}
+            //                ignoreNested = {"checkout.orders", "products.orders"}
+            ),
+//    disabledFor = {
+//      RestService.HttpMethod.DELETE,
+//      RestService.HttpMethod.PATCH,
+//      RestService.HttpMethod.POST,
+//      RestService.HttpMethod.PUT,
+//      RestService.HttpMethod.GET
+//    },
+    events = @RestService.Events(onCreate = true, emitter = KafkaEventsForOrder.class))
+public class Order extends HyperEntity {
 
-    int orderNumber;
-    int stockQuantity;
-    String internalId;
+  int orderNumber;
+  int stockQuantity;
+  String internalId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "checkout_id")
-    private Checkout checkout;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "checkout_id")
+  private Checkout checkout;
 
-    @ManyToMany
-    @JoinTable(
-            name = "order_product",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private List<Product> products = new ArrayList<>();
+  @ManyToMany
+  @JoinTable(
+      name = "order_product",
+      joinColumns = @JoinColumn(name = "order_id"),
+      inverseJoinColumns = @JoinColumn(name = "product_id"))
+  private List<Product> products = new ArrayList<>();
 
-    public int getOrderNumber() {
-        return orderNumber;
-    }
-
-    public void setOrderNumber(int orderNumber) {
-        this.orderNumber = orderNumber;
-    }
-
-    public int getStockQuantity() {
-        return stockQuantity;
-    }
-
-    public void setStockQuantity(int stockQuantity) {
-        this.stockQuantity = stockQuantity;
-    }
-
-    public String getInternalId() {
-        return internalId;
-    }
-
-    public void setInternalId(String internalId) {
-        this.internalId = internalId;
-    }
-
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
 }
-
-

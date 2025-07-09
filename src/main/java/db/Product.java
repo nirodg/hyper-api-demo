@@ -1,44 +1,44 @@
 package db;
 
-import dev.hyperapi.runtime.core.model.BaseEntity;
+import db.events.KafkaEvents;
+import dev.hyperapi.runtime.core.model.HyperEntity;
 import dev.hyperapi.runtime.core.processor.annotations.RestService;
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.math.BigDecimal;
 import java.util.List;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @RestService(
         path = "/prods",
-        dto = "ProductSingleDto",
-        scope = RestService.Scope.REQUEST
+        dto = "MyProduct",
+        scope = RestService.Scope.REQUEST,
+        mapping = @RestService.Mapping(
+                ignoreNested = {"orders.checkout.orders"}
+        ),
+
+//        disabledFor = {RestService.HttpMethod.POST, RestService.HttpMethod.POST, RestService.HttpMethod.PATCH},
+        events = @RestService.Events(
+                onCreate = true,
+                onDelete = true,
+                onPatch = true,
+                onUpdate = true,
+                emitter = KafkaEvents.class
+        )
+
 )
-public class Product extends BaseEntity {
+public class Product extends HyperEntity {
 
     String name;
     BigDecimal price;
 
+    @JsonbTransient
     @ManyToMany(mappedBy = "products")
     private List<Order> orders;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
 }
