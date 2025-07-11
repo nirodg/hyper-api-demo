@@ -1,7 +1,7 @@
 package db;
 
 import db.events.KafkaEventsForOrder;
-import dev.hyperapi.runtime.core.model.HyperEntity;
+import dev.hyperapi.runtime.core.model.BaseEntity;
 import dev.hyperapi.runtime.core.processor.annotations.RestService;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "orders")
 @RestService(
     path = "/orders",
+        repositoryPackage = "repositories",
     mapping =
         @RestService.Mapping(
             ignore = {"internalId"}
@@ -28,7 +29,7 @@ import lombok.EqualsAndHashCode;
 //      RestService.HttpMethod.GET
 //    },
     events = @RestService.Events(onCreate = true, emitter = KafkaEventsForOrder.class))
-public class Order extends HyperEntity {
+public class Order extends BaseEntity {
 
   int orderNumber;
   int stockQuantity;

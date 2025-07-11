@@ -1,7 +1,7 @@
 package db;
 
 import db.events.KafkaEvents;
-import dev.hyperapi.runtime.core.model.HyperEntity;
+import dev.hyperapi.runtime.core.model.BaseEntity;
 import dev.hyperapi.runtime.core.processor.annotations.RestService;
 import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Entity;
@@ -17,6 +17,7 @@ import lombok.EqualsAndHashCode;
 @RestService(
         path = "/prods",
         dto = "MyProduct",
+        repositoryPackage = "repositories",
         scope = RestService.Scope.REQUEST,
         mapping = @RestService.Mapping(
                 ignoreNested = {"orders.checkout.orders"}
@@ -32,7 +33,7 @@ import lombok.EqualsAndHashCode;
         )
 
 )
-public class Product extends HyperEntity {
+public class Product extends BaseEntity {
 
     String name;
     BigDecimal price;

@@ -1,7 +1,7 @@
 package db;
 
 
-import dev.hyperapi.runtime.core.model.HyperEntity;
+import dev.hyperapi.runtime.core.model.BaseEntity;
 import dev.hyperapi.runtime.core.processor.annotations.RestService;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -17,6 +17,7 @@ import lombok.EqualsAndHashCode;
 @RestService(
         path = "/checkouts",
         dto = "CheckoutDto",
+        repositoryPackage = "repositories",
         scope = RestService.Scope.REQUEST,
         pageable = @RestService.Pageable(
                 limit = 33,
@@ -26,7 +27,7 @@ import lombok.EqualsAndHashCode;
         events = @RestService.Events(
                 onCreate = true)
 )
-public class Checkout extends HyperEntity {
+public class Checkout extends BaseEntity {
 
     @OneToMany(mappedBy = "checkout", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Order> orders = new ArrayList<>();
