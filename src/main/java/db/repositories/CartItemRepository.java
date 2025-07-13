@@ -1,10 +1,13 @@
 package db.repositories;
 
-import db.Checkout;
-import db.Product;
+
+import db.Cart;
+import db.CartItem;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class CheckoutRepository implements PanacheRepositoryBase<Checkout, Long> {
+public class CartItemRepository implements PanacheRepositoryBase<CartItem, Long> {
+
+
 }

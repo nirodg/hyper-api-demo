@@ -1,49 +1,75 @@
 package db;
 
-import db.events.KafkaEventsForOrder;
-import dev.hyperapi.runtime.core.model.BaseEntity;
-import dev.hyperapi.runtime.core.processor.annotations.RestService;
-import jakarta.persistence.*;
-import java.util.ArrayList;
+import db.enums.OrderStatus;
+import dev.hyperapi.runtime.core.model.HyperEntity;
+import dev.hyperapi.runtime.core.processor.annotations.Events;
+import dev.hyperapi.runtime.core.processor.annotations.HyperResource;
+import dev.hyperapi.runtime.core.processor.annotations.Mapping;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "orders")
-@RestService(
+@HyperResource(
     path = "/orders",
-        repositoryPackage = "repositories",
-    mapping =
-        @RestService.Mapping(
-            ignore = {"internalId"}
-            //                ignoreNested = {"checkout.orders", "products.orders"}
-            ),
-//    disabledFor = {
-//      RestService.HttpMethod.DELETE,
-//      RestService.HttpMethod.PATCH,
-//      RestService.HttpMethod.POST,
-//      RestService.HttpMethod.PUT,
-//      RestService.HttpMethod.GET
-//    },
-    events = @RestService.Events(onCreate = true, emitter = KafkaEventsForOrder.class))
-public class Order extends BaseEntity {
+    repositoryPackage = "repositories",
+    mapping = @Mapping(ignore = {"internalId"}),
+    events = @Events(onCreate = true)
+)
+public class Order extends HyperEntity {
 
-  int orderNumber;
-  int stockQuantity;
-  String internalId;
+  private String internalId;
+  private int orderNumber;
+
+  @Enumerated(EnumType.STRING)
+  private OrderStatus status;
+
+  private BigDecimal subtotal;
+  private BigDecimal tax;
+  private BigDecimal total;
+
+  private LocalDateTime placedAt;
+  private LocalDateTime deliveredAt;
+
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
+
+  @ManyToOne
+  private Address shippingAddress;
+
+  @ManyToOne
+  private Address billingAddress;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "checkout_id")
   private Checkout checkout;
 
-  @ManyToMany
-  @JoinTable(
-      name = "order_product",
-      joinColumns = @JoinColumn(name = "order_id"),
-      inverseJoinColumns = @JoinColumn(name = "product_id"))
-  private List<Product> products = new ArrayList<>();
+  @OneToMany(mappedBy = "order", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+  private List<OrderItem> items;
 
+  @ManyToOne
+  @JoinColumn(name = "coupon_id")
+  private Coupon coupon;
+
+  private BigDecimal discountAmount;
 }
