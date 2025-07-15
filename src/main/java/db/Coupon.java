@@ -1,9 +1,9 @@
 package db;
 
 import db.enums.DiscountType;
-import dev.hyperapi.runtime.core.model.HyperEntity;
-import dev.hyperapi.runtime.core.processor.annotations.Events;
-import dev.hyperapi.runtime.core.processor.annotations.HyperResource;
+import com.eorghe.hyperapi.model.HyperEntity;
+import com.eorghe.hyperapi.processor.annotations.Events;
+import com.eorghe.hyperapi.processor.annotations.HyperResource;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

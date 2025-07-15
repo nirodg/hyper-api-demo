@@ -1,11 +1,11 @@
 package db;
 
-import dev.hyperapi.runtime.core.model.HyperEntity;
-import dev.hyperapi.runtime.core.processor.annotations.Events;
-import dev.hyperapi.runtime.core.processor.annotations.HyperResource;
-import dev.hyperapi.runtime.core.processor.annotations.Pageable;
-import dev.hyperapi.runtime.core.processor.enums.HttpMethod;
-import dev.hyperapi.runtime.core.processor.enums.Scope;
+import com.eorghe.hyperapi.model.HyperEntity;
+import com.eorghe.hyperapi.processor.annotations.Events;
+import com.eorghe.hyperapi.processor.annotations.HyperResource;
+import com.eorghe.hyperapi.processor.annotations.Pageable;
+import com.eorghe.hyperapi.processor.enums.HttpMethod;
+import com.eorghe.hyperapi.processor.enums.Scope;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;

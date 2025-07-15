@@ -1,19 +1,19 @@
 package events;
 
-import db.Product;
+import db.Order;
 import com.eorghe.hyperapi.events.AbstractTypedEmitter;
 import com.eorghe.hyperapi.events.EntityEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class ProductEvents extends AbstractTypedEmitter<Product> {
+public class OrderEvents extends AbstractTypedEmitter<Order> {
 
-    protected ProductEvents() {
-        super(Product.class);
+    protected OrderEvents() {
+        super(Order.class);
     }
 
     @Override
-    protected void emitTyped(EntityEvent.Type type, Product entity) {
+    protected void emitTyped(EntityEvent.Type type, Order entity) {
         switch (type){
             case CREATE -> postCreate(entity);
             case UPDATE -> postUpdate(entity);
@@ -22,23 +22,23 @@ public class ProductEvents extends AbstractTypedEmitter<Product> {
         }
     }
 
-    void postCreate(Product product) {
-        System.out.println("Post-create processing for product: " + product.getName());
+    void postCreate(Order Order) {
+        System.out.println("Post-create processing for Order: " + Order.getOrderNumber());
         // Add any additional logic needed after the event is emitted
     }
 
-    void postUpdate(Product product) {
-        System.out.println("Post-update processing for product: " + product.getName());
+    void postUpdate(Order Order) {
+        System.out.println("Post-update processing for Order: " + Order.getOrderNumber());
         // Add any additional logic needed after the event is emitted
     }
 
-    void postDelete(Product product) {
-        System.out.println("Post-delete processing for deleted product");
+    void postDelete(Order Order) {
+        System.out.println("Post-delete processing for deleted Order");
         // Add any additional logic needed after the event is emitted
     }
 
-    void postPatch(Product product) {
-        System.out.println("Post-patch processing for product: " + product.getName());
+    void postPatch(Order Order) {
+        System.out.println("Post-patch processing for Order: " + Order.getOrderNumber());
         // Add any additional logic needed after the event is emitted
     }
 }

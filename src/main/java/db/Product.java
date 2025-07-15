@@ -1,11 +1,11 @@
 package db;
 
 import events.ProductEvents;
-import dev.hyperapi.runtime.core.model.HyperEntity;
-import dev.hyperapi.runtime.core.processor.annotations.Events;
-import dev.hyperapi.runtime.core.processor.annotations.HyperResource;
-import dev.hyperapi.runtime.core.processor.annotations.Mapping;
-import dev.hyperapi.runtime.core.processor.enums.Scope;
+import com.eorghe.hyperapi.model.HyperEntity;
+import com.eorghe.hyperapi.processor.annotations.Events;
+import com.eorghe.hyperapi.processor.annotations.HyperResource;
+import com.eorghe.hyperapi.processor.annotations.Mapping;
+import com.eorghe.hyperapi.processor.enums.Scope;
 import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;

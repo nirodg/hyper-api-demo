@@ -2,7 +2,7 @@ package events;
 
 import db.Order;
 import db.User;
-import dev.hyperapi.runtime.core.events.EntityEvent;
+import com.eorghe.hyperapi.events.EntityEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 
