@@ -4,6 +4,7 @@ import db.Coupon;
 import db.Order;
 import db.OrderItem;
 import db.User;
+import db.dto.CartItemDTO;
 import db.enums.OrderStatus;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -60,7 +61,7 @@ public class OrderWorkflowService {
     User user = userMapper.toEntity(userDto);
 
     db.dto.CartDTO cartDto = extendedCartService.getCartForUser(userId);
-    List<db.dto.CartItemDTO> cartItems = cartItemMapper.toList(cartDto.getItems()); // This a know bug, should be List<CartItemDTO>
+    List<db.dto.CartItemDTO> cartItems = cartDto.getItems();
 
     if (cartItems.isEmpty()) {
       throw new IllegalStateException("Cart is empty");
@@ -70,13 +71,13 @@ public class OrderWorkflowService {
     BigDecimal subtotal = BigDecimal.ZERO;
 
     for (db.dto.CartItemDTO cartItem : cartItems) {
-      db.dto.ProductDTO product = productMapper.toDto(cartItem.getProduct());
-      BigDecimal total = product.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity()));
+//      db.dto.ProductDTO product = productMapper.toDto(cartItem.getProduct());
+      BigDecimal total = cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity()));
 
       OrderItem orderItem = OrderItem.builder()
-          .product(productMapper.toEntity(product)) // assuming ProductDTO has `.toEntity()` or use mapper
+          .product(productMapper.toEntity(cartItem.getProduct()))
           .quantity(cartItem.getQuantity())
-          .unitPrice(product.getPrice())
+          .unitPrice(cartItem.getProduct().getPrice())
           .total(total)
           .build();
 
