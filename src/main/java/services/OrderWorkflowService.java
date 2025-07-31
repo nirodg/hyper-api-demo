@@ -60,23 +60,22 @@ public class OrderWorkflowService {
     User user = userMapper.toEntity(userDto);
 
     db.dto.CartDTO cartDto = extendedCartService.getCartForUser(userId);
-    List<db.dto.CartItemDTO> cartItems = cartItemMapper.toList(cartDto.getItems()); // This a know bug, should be List<CartItemDTO>
+//    List<db.dto.CartItemDTO> cartItems = cartDto.getItems();//  cartItemMapper.toList(cartDto.getItems()); // This a know bug, should be List<CartItemDTO>
 
-    if (cartItems.isEmpty()) {
+    if (cartDto.getItems().isEmpty()) {
       throw new IllegalStateException("Cart is empty");
     }
 
     List<OrderItem> orderItems = new ArrayList<>();
     BigDecimal subtotal = BigDecimal.ZERO;
 
-    for (db.dto.CartItemDTO cartItem : cartItems) {
-      db.dto.ProductDTO product = productMapper.toDto(cartItem.getProduct());
-      BigDecimal total = product.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity()));
+    for (db.dto.CartItemDTO cartItem : cartDto.getItems()) {
+      BigDecimal total = cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity()));
 
       OrderItem orderItem = OrderItem.builder()
-          .product(productMapper.toEntity(product)) // assuming ProductDTO has `.toEntity()` or use mapper
+          .product(productMapper.toEntity(cartItem.getProduct())) // assuming ProductDTO has `.toEntity()` or use mapper
           .quantity(cartItem.getQuantity())
-          .unitPrice(product.getPrice())
+          .unitPrice(cartItem.getProduct().getPrice())
           .total(total)
           .build();
 

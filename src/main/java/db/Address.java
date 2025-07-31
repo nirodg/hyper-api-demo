@@ -16,20 +16,20 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "addresses")
 @HyperResource(
-    path = "/addresses",
-    repositoryPackage = "repositories",
-    events = @Events(onCreate = true, onUpdate = true, onDelete = true)
+        path = "/addresses",
+        repositoryPackage = "repositories",
+        events = @Events(onCreate = true, onUpdate = true, onDelete = true)
 )
 public class Address extends HyperEntity {
 
-  private String street;
-  private String city;
-  private String zipCode;
-  private String country;
-  private boolean billing;
-  private boolean shipping;
+    private String street;
+    private String city;
+    private String zipCode;
+    private String country;
+    private boolean billing;
+    private boolean shipping;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id")
-  private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
